@@ -21,7 +21,6 @@ package se.kth.swim.croupier.util;
 
 import se.sics.kompics.network.Address;
 import se.sics.kompics.network.Transport;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
 import se.sics.p2ptoolbox.util.network.OverlayHeader;
 import se.sics.p2ptoolbox.util.network.impl.BasicHeader;
 

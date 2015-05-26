@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import se.kth.swim.croupier.CroupierSelectionPolicy;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
-import se.sics.p2ptoolbox.util.network.impl.BasicAddress;
+import se.kth.swim.network.BasicAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
@@ -69,7 +69,7 @@ public class CroupierView<C extends Object> {
         }
     }
 
-    public NatedAddress selectPeerToShuffleWith(CroupierSelectionPolicy policy,
+    public NattedAddress selectPeerToShuffleWith(CroupierSelectionPolicy policy,
             boolean softmax, double temperature) {
         if (d2e.isEmpty()) {
             return null;
@@ -117,7 +117,7 @@ public class CroupierView<C extends Object> {
         return selectedEntry.getDescriptor().getSource();
     }
 
-    public Set<CroupierContainer<C>> initiatorCopySet(int count, NatedAddress destinationPeer) {
+    public Set<CroupierContainer<C>> initiatorCopySet(int count, NattedAddress destinationPeer) {
         List<CroupierViewEntry> randomEntries = generateRandomSample(count);
         Set<CroupierContainer<C>> descriptors = new HashSet<CroupierContainer<C>>();
         for (CroupierViewEntry cacheEntry : randomEntries) {
@@ -127,7 +127,7 @@ public class CroupierView<C extends Object> {
         return descriptors;
     }
 
-    public Set<CroupierContainer<C>> receiverCopySet(int count, NatedAddress destinationPeer) {
+    public Set<CroupierContainer<C>> receiverCopySet(int count, NattedAddress destinationPeer) {
         List<CroupierViewEntry> randomEntries = generateRandomSample(count);
         Set<CroupierContainer<C>> descriptors = new HashSet<CroupierContainer<C>>();
         for (CroupierViewEntry cacheEntry : randomEntries) {
@@ -137,7 +137,7 @@ public class CroupierView<C extends Object> {
         return descriptors;
     }
 
-    public void selectToKeep(NatedAddress from, Set<CroupierContainer<C>> descriptors) {
+    public void selectToKeep(NattedAddress from, Set<CroupierContainer<C>> descriptors) {
         BasicAddress baseFrom = (BasicAddress)from.getBaseAdr();
         if (baseFrom.equals(selfAddress)) {
             return;
@@ -230,7 +230,7 @@ public class CroupierView<C extends Object> {
         return d2e.remove(src) != null;
     }
 
-    public void timedOut(NatedAddress src) {
+    public void timedOut(NattedAddress src) {
         removeEntry((BasicAddress)src.getBaseAdr());
     }
 

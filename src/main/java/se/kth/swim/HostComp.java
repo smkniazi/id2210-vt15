@@ -36,7 +36,7 @@ import se.sics.kompics.Start;
 import se.sics.kompics.Stop;
 import se.sics.kompics.network.Network;
 import se.sics.kompics.timer.Timer;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
@@ -46,7 +46,7 @@ public class HostComp extends ComponentDefinition {
     private Positive<Network> network = requires(Network.class);
     private Positive<Timer> timer = requires(Timer.class);
 
-    private final NatedAddress selfAddress;
+    private final NattedAddress selfAddress;
     
     private Component swim;
     private Component nat;
@@ -60,7 +60,7 @@ public class HostComp extends ComponentDefinition {
         subscribe(handleStop, control);
         
         int overlayId = 1; //so far we don' start multiple croupier overlay
-        croupier = create(CroupierComp.class, new CroupierComp.CroupierInit(selfAddress, new ArrayList<NatedAddress>(init.bootstrapNodes), init.seed, init.croupierConfig, overlayId));
+        croupier = create(CroupierComp.class, new CroupierComp.CroupierInit(selfAddress, new ArrayList<NattedAddress>(init.bootstrapNodes), init.seed, init.croupierConfig, overlayId));
         connect(croupier.getNegative(Timer.class), timer);
         connect(croupier.getNegative(Network.class), network, new OverlayFilter(overlayId));
         
@@ -92,13 +92,13 @@ public class HostComp extends ComponentDefinition {
 
     public static class HostInit extends Init<HostComp> {
 
-        public final NatedAddress selfAddress;
-        public final Set<NatedAddress> bootstrapNodes;
-        public final NatedAddress aggregatorAddress;
+        public final NattedAddress selfAddress;
+        public final Set<NattedAddress> bootstrapNodes;
+        public final NattedAddress aggregatorAddress;
         public final long seed;
         public final CroupierConfig croupierConfig;
 
-        public HostInit(NatedAddress selfAddress, Set<NatedAddress> bootstrapNodes, NatedAddress aggregatorAddress, long seed, CroupierConfig croupierConfig) {
+        public HostInit(NattedAddress selfAddress, Set<NattedAddress> bootstrapNodes, NattedAddress aggregatorAddress, long seed, CroupierConfig croupierConfig) {
             this.selfAddress = selfAddress;
             this.bootstrapNodes = bootstrapNodes;
             this.aggregatorAddress = aggregatorAddress;

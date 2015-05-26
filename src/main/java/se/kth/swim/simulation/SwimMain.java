@@ -21,11 +21,11 @@ package se.kth.swim.simulation;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.Assert;
+import se.kth.swim.network.BasicAddress;
+import se.kth.swim.network.BasicNattedAddress;
 import se.sics.kompics.Kompics;
 import se.sics.kompics.simulation.SimulatorScheduler;
 import se.sics.p2ptoolbox.simulator.run.LauncherComp;
-import se.sics.p2ptoolbox.util.network.impl.BasicAddress;
-import se.sics.p2ptoolbox.util.network.impl.BasicNatedAddress;
 
 /**
  *
@@ -45,7 +45,7 @@ public class SwimMain {
         LauncherComp.scenario = SwimScenario.simpleBoot(1234L);
         //
         try {
-            LauncherComp.simulatorClientAddress = new BasicNatedAddress(new BasicAddress(InetAddress.getByName("127.0.0.1"), 30000, -1));
+            LauncherComp.simulatorClientAddress = new BasicNattedAddress(new BasicAddress(InetAddress.getByName("127.0.0.1"), 30000, -1));
         } catch (UnknownHostException ex) {
             throw new RuntimeException("cannot create address for localhost");
         }

@@ -28,6 +28,8 @@ import org.javatuples.Pair;
 import se.kth.swim.AggregatorComp;
 import se.kth.swim.HostComp;
 import se.kth.swim.croupier.CroupierConfig;
+import se.kth.swim.network.BasicAddress;
+import se.kth.swim.network.BasicNattedAddress;
 import se.sics.p2ptoolbox.simulator.cmd.OperationCmd;
 import se.sics.p2ptoolbox.simulator.cmd.impl.ChangeNetworkModelCmd;
 import se.sics.p2ptoolbox.simulator.cmd.impl.SimulationResult;
@@ -44,9 +46,7 @@ import se.sics.p2ptoolbox.simulator.dsl.adaptor.Operation1;
 import se.sics.p2ptoolbox.simulator.dsl.distribution.ConstantDistribution;
 import se.sics.p2ptoolbox.simulator.dsl.distribution.extra.GenIntSequentialDistribution;
 import se.sics.p2ptoolbox.util.network.NatType;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
-import se.sics.p2ptoolbox.util.network.impl.BasicAddress;
-import se.sics.p2ptoolbox.util.network.impl.BasicNatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
@@ -103,8 +103,8 @@ public class SwimScenario {
 
         @Override
         public StartAggregatorCmd generate(final Integer nodeId) {
-            return new StartAggregatorCmd<AggregatorComp, NatedAddress>() {
-                private NatedAddress aggregatorAddress;
+            return new StartAggregatorCmd<AggregatorComp, NattedAddress>() {
+                private NattedAddress aggregatorAddress;
 
                 @Override
                 public Class getNodeComponentDefinition() {
@@ -113,12 +113,12 @@ public class SwimScenario {
 
                 @Override
                 public AggregatorComp.AggregatorInit getNodeComponentInit() {
-                    aggregatorAddress = new BasicNatedAddress(new BasicAddress(localHost, 23456, nodeId));
+                    aggregatorAddress = new BasicNattedAddress(new BasicAddress(localHost, 23456, nodeId));
                     return new AggregatorComp.AggregatorInit(aggregatorAddress);
                 }
 
                 @Override
-                public NatedAddress getAddress() {
+                public NattedAddress getAddress() {
                     return aggregatorAddress;
                 }
 
@@ -130,8 +130,8 @@ public class SwimScenario {
 
         @Override
         public StartNodeCmd generate(final Integer nodeId) {
-            return new StartNodeCmd<HostComp, NatedAddress>() {
-                private NatedAddress nodeAddress;
+            return new StartNodeCmd<HostComp, NattedAddress>() {
+                private NattedAddress nodeAddress;
 
                 @Override
                 public Class getNodeComponentDefinition() {
@@ -139,13 +139,13 @@ public class SwimScenario {
                 }
 
                 @Override
-                public HostComp.HostInit getNodeComponentInit(NatedAddress aggregatorServer, Set<NatedAddress> bootstrapNodes) {
+                public HostComp.HostInit getNodeComponentInit(NattedAddress aggregatorServer, Set<NattedAddress> bootstrapNodes) {
                     if (nodeId % 2 == 0) {
                         //open address
-                        nodeAddress = new BasicNatedAddress(new BasicAddress(localHost, 12345, nodeId));
+                        nodeAddress = new BasicNattedAddress(new BasicAddress(localHost, 12345, nodeId));
                     } else {
                         //nated address
-                        nodeAddress = new BasicNatedAddress(new BasicAddress(localHost, 12345, nodeId), NatType.NAT, bootstrapNodes);
+                        nodeAddress = new BasicNattedAddress(new BasicAddress(localHost, 12345, nodeId), NatType.NAT, bootstrapNodes);
                     }
                     /**
                      * we don't want all nodes to start their pseudo random
@@ -161,7 +161,7 @@ public class SwimScenario {
                 }
 
                 @Override
-                public NatedAddress getAddress() {
+                public NattedAddress getAddress() {
                     return nodeAddress;
                 }
 

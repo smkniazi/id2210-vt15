@@ -20,25 +20,25 @@ package se.kth.swim.croupier.internal;
 
 import se.kth.swim.croupier.util.Ageing;
 import se.kth.swim.croupier.util.Container;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
  */
-public class CroupierContainer<C extends Object> implements Container<NatedAddress, C>, Ageing {
+public class CroupierContainer<C extends Object> implements Container<NattedAddress, C>, Ageing {
 
     private int age;
-    private NatedAddress src;
+    private NattedAddress src;
     private final C content;
 
-    public CroupierContainer(NatedAddress src, C content, int age) {
+    public CroupierContainer(NattedAddress src, C content, int age) {
         this.age = age;
         this.src = src;
         this.content = content;
     }
 
-    public CroupierContainer(NatedAddress src, C content) {
+    public CroupierContainer(NattedAddress src, C content) {
         this(src, content, 0);
     }
 
@@ -48,7 +48,7 @@ public class CroupierContainer<C extends Object> implements Container<NatedAddre
     }
 
     @Override
-    public NatedAddress getSource() {
+    public NattedAddress getSource() {
         return src;
     }
 

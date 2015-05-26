@@ -36,6 +36,7 @@ import se.kth.swim.croupier.msg.CroupierJoin;
 import se.kth.swim.croupier.msg.CroupierSample;
 import se.kth.swim.croupier.msg.CroupierUpdate;
 import se.kth.swim.croupier.util.OverlayHeaderImpl;
+import se.kth.swim.network.BasicAddress;
 import se.sics.kompics.ComponentDefinition;
 import se.sics.kompics.Handler;
 import se.sics.kompics.Init;
@@ -51,8 +52,7 @@ import se.sics.kompics.timer.SchedulePeriodicTimeout;
 import se.sics.kompics.timer.ScheduleTimeout;
 import se.sics.kompics.timer.Timeout;
 import se.sics.kompics.timer.Timer;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
-import se.sics.p2ptoolbox.util.network.impl.BasicAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 import se.sics.p2ptoolbox.util.network.impl.BasicHeader;
 
 /**
@@ -67,12 +67,12 @@ public class CroupierComp extends ComponentDefinition {
     Positive<Network> network = requires(Network.class);
     Positive<Timer> timer = requires(Timer.class);
 
-    private NatedAddress self;
+    private NattedAddress self;
     private final CroupierConfig croupierConfig;
     private final String logPrefix;
     private final int overlayId;
 
-    private List<NatedAddress> bootstrapNodes;
+    private List<NattedAddress> bootstrapNodes;
     private Object selfView;
     private CroupierView publicView;
     private CroupierView privateView;
@@ -85,7 +85,7 @@ public class CroupierComp extends ComponentDefinition {
         this.croupierConfig = init.croupierConfig;
         this.overlayId = init.overlayId;
         this.logPrefix = "<oid:" + overlayId + ",nid:" + self.getBaseAdr().toString() + ">";
-        this.bootstrapNodes = new ArrayList<NatedAddress>(init.bootstrapNodes);
+        this.bootstrapNodes = new ArrayList<NattedAddress>(init.bootstrapNodes);
 
         log.info("{} initiating with bootstrap nodes:{} ...", logPrefix, bootstrapNodes);
 
@@ -197,11 +197,11 @@ public class CroupierComp extends ComponentDefinition {
         }
     };
 
-    private NatedAddress selectPeerToShuffleWith(double temperature) {
+    private NattedAddress selectPeerToShuffleWith(double temperature) {
         if (!bootstrapNodes.isEmpty()) {
             return bootstrapNodes.remove(0);
         }
-        NatedAddress node = null;
+        NattedAddress node = null;
         if (!publicView.isEmpty()) {
             node = publicView.selectPeerToShuffleWith(croupierConfig.policy, true, temperature);
         } else if (!privateView.isEmpty()) {
@@ -228,7 +228,7 @@ public class CroupierComp extends ComponentDefinition {
                 trigger(cs, croupierPort);
             }
 
-            NatedAddress peer = selectPeerToShuffleWith(croupierConfig.softMaxTemperature);
+            NattedAddress peer = selectPeerToShuffleWith(croupierConfig.softMaxTemperature);
             if (peer == null || peer.getBaseAdr().equals(self.getBaseAdr())) {
                 log.error("{} this should not happen - logic error selecting peer", logPrefix);
                 throw new RuntimeException("Error selecting peer");
@@ -251,7 +251,7 @@ public class CroupierComp extends ComponentDefinition {
                 privateDescCopy.add(new CroupierContainer(self, selfView));
             }
 
-            OverlayHeaderImpl<NatedAddress> requestHeader = new OverlayHeaderImpl(new BasicHeader(self, peer, Transport.UDP), overlayId);
+            OverlayHeaderImpl<NattedAddress> requestHeader = new OverlayHeaderImpl(new BasicHeader(self, peer, Transport.UDP), overlayId);
             CroupierShuffle.Request requestContent = new CroupierShuffle.Request(UUID.randomUUID(), publicDescCopy, privateDescCopy);
             CroupierShuffleNet.Request request = new CroupierShuffleNet.Request(requestHeader, requestContent);
             log.trace("{} sending:{} to:{}", new Object[]{logPrefix, requestContent, peer});
@@ -264,12 +264,12 @@ public class CroupierComp extends ComponentDefinition {
 
         @Override
         public void handle(CroupierShuffleNet.Request request) {
-            OverlayHeaderImpl<NatedAddress> header = (OverlayHeaderImpl) request.getHeader();
+            OverlayHeaderImpl<NattedAddress> header = (OverlayHeaderImpl) request.getHeader();
             if (header.getOverlayId() != overlayId) {
                 log.error("{} message with header:{} not belonging to croupier overlay:{}", new Object[]{logPrefix, header, overlayId});
                 throw new RuntimeException("message not belonging to croupier overlay");
             }
-            NatedAddress reqSrc = request.getHeader().getSource();
+            NattedAddress reqSrc = request.getHeader().getSource();
             if (self.getBaseAdr().equals(reqSrc.getBaseAdr())) {
                 log.error("{} Tried to shuffle with myself", logPrefix);
                 throw new RuntimeException("tried to shuffle with myself");
@@ -295,7 +295,7 @@ public class CroupierComp extends ComponentDefinition {
                 privateDescCopy.add(new CroupierContainer(self, selfView));
             }
 
-            OverlayHeaderImpl<NatedAddress> responseHeader = new OverlayHeaderImpl(new BasicHeader(self, reqSrc, Transport.UDP), overlayId);
+            OverlayHeaderImpl<NattedAddress> responseHeader = new OverlayHeaderImpl(new BasicHeader(self, reqSrc, Transport.UDP), overlayId);
             CroupierShuffle.Response responseContent = new CroupierShuffle.Response(request.getContent().getId(), publicDescCopy, privateDescCopy);
             CroupierShuffleNet.Response response = new CroupierShuffleNet.Response(responseHeader, responseContent);
 
@@ -314,12 +314,12 @@ public class CroupierComp extends ComponentDefinition {
 
                 @Override
                 public void handle(CroupierShuffleNet.Response response) {
-                    OverlayHeaderImpl<NatedAddress> header = (OverlayHeaderImpl)response.getHeader();
+                    OverlayHeaderImpl<NattedAddress> header = (OverlayHeaderImpl)response.getHeader();
                     if (header.getOverlayId() != overlayId) {
                         log.error("{} message with header:{} not belonging to croupier overlay:{}", new Object[]{logPrefix, header, overlayId});
                         throw new RuntimeException("message not belonging to croupier overlay");
                     }
-                    NatedAddress respSrc = response.getHeader().getSource();
+                    NattedAddress respSrc = response.getHeader().getSource();
                     if (self.getBaseAdr().equals(respSrc.getBaseAdr())) {
                         log.error("{} Tried to shuffle with myself", logPrefix);
                         throw new RuntimeException("tried to shuffle with myself");
@@ -373,7 +373,7 @@ public class CroupierComp extends ComponentDefinition {
         trigger(cpt, timer);
     }
 
-    private void scheduleShuffleTimeout(NatedAddress dest) {
+    private void scheduleShuffleTimeout(NattedAddress dest) {
         if (shuffleTimeoutId != null) {
             log.warn("{} double starting shuffle timeout", logPrefix);
             return;
@@ -396,13 +396,13 @@ public class CroupierComp extends ComponentDefinition {
 
     public static class CroupierInit extends Init<CroupierComp> {
 
-        public final NatedAddress self;
-        public final List<NatedAddress> bootstrapNodes;
+        public final NattedAddress self;
+        public final List<NattedAddress> bootstrapNodes;
         public final long seed;
         public final CroupierConfig croupierConfig;
         public final int overlayId;
 
-        public CroupierInit(NatedAddress self, List<NatedAddress> bootstrapNodes, long seed, CroupierConfig croupierConfig, int overlayId) {
+        public CroupierInit(NattedAddress self, List<NattedAddress> bootstrapNodes, long seed, CroupierConfig croupierConfig, int overlayId) {
             this.self = self;
             this.bootstrapNodes = bootstrapNodes;
             this.seed = seed;
@@ -425,9 +425,9 @@ public class CroupierComp extends ComponentDefinition {
 
     public class ShuffleTimeout extends Timeout {
 
-        public final NatedAddress dest;
+        public final NattedAddress dest;
 
-        public ShuffleTimeout(ScheduleTimeout request, NatedAddress dest) {
+        public ShuffleTimeout(ScheduleTimeout request, NattedAddress dest) {
             super(request);
             this.dest = dest;
         }

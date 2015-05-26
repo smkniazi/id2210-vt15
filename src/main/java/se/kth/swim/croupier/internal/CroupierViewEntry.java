@@ -23,7 +23,7 @@ package se.kth.swim.croupier.internal;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-import se.sics.p2ptoolbox.util.network.impl.BasicAddress;
+import se.kth.swim.network.BasicAddress;
 
 /**
  * The <code>RandomViewEntry</code> class represents an entry in a node's

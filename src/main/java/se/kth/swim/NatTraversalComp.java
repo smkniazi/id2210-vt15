@@ -35,7 +35,7 @@ import se.sics.kompics.Start;
 import se.sics.kompics.Stop;
 import se.sics.kompics.network.Header;
 import se.sics.kompics.network.Network;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 import se.sics.p2ptoolbox.util.network.impl.RelayHeader;
 import se.sics.p2ptoolbox.util.network.impl.SourceHeader;
 
@@ -50,7 +50,7 @@ public class NatTraversalComp extends ComponentDefinition {
     private Positive<Network> network = requires(Network.class);
     private Positive<CroupierPort> croupier = requires(CroupierPort.class);
 
-    private final NatedAddress selfAddress;
+    private final NattedAddress selfAddress;
     private final Random rand;
 
     public NatTraversalComp(NatTraversalInit init) {
@@ -87,15 +87,15 @@ public class NatTraversalComp extends ComponentDefinition {
         @Override
         public void handle(NetMsg<Object> msg) {
             log.trace("{} received msg:{}", new Object[]{selfAddress.getId(), msg});
-            Header<NatedAddress> header = msg.getHeader();
+            Header<NattedAddress> header = msg.getHeader();
             if (header instanceof SourceHeader) {
                 if (!selfAddress.isOpen()) {
                     throw new RuntimeException("source header msg received on nated node - nat traversal logic error");
                 }
-                SourceHeader<NatedAddress> sourceHeader = (SourceHeader<NatedAddress>) header;
+                SourceHeader<NattedAddress> sourceHeader = (SourceHeader<NattedAddress>) header;
                 if (sourceHeader.getActualDestination().getParents().contains(selfAddress)) {
                     log.info("{} relaying message for:{}", new Object[]{selfAddress.getId(), sourceHeader.getSource()});
-                    RelayHeader<NatedAddress> relayHeader = sourceHeader.getRelayHeader();
+                    RelayHeader<NattedAddress> relayHeader = sourceHeader.getRelayHeader();
                     trigger(msg.copyMessage(relayHeader), network);
                     return;
                 } else {
@@ -106,9 +106,9 @@ public class NatTraversalComp extends ComponentDefinition {
                 if (selfAddress.isOpen()) {
                     throw new RuntimeException("relay header msg received on open node - nat traversal logic error");
                 }
-                RelayHeader<NatedAddress> relayHeader = (RelayHeader<NatedAddress>) header;
+                RelayHeader<NattedAddress> relayHeader = (RelayHeader<NattedAddress>) header;
                 log.info("{} delivering relayed message:{} from:{}", new Object[]{selfAddress.getId(), msg, relayHeader.getActualSource()});
-                Header<NatedAddress> originalHeader = relayHeader.getActualHeader();
+                Header<NattedAddress> originalHeader = relayHeader.getActualHeader();
                 trigger(msg.copyMessage(originalHeader), local);
                 return;
             } else {
@@ -125,7 +125,7 @@ public class NatTraversalComp extends ComponentDefinition {
         @Override
         public void handle(NetMsg<Object> msg) {
             log.trace("{} sending msg:{}", new Object[]{selfAddress.getId(), msg});
-            Header<NatedAddress> header = msg.getHeader();
+            Header<NattedAddress> header = msg.getHeader();
             if(header.getDestination().isOpen()) {
                 log.info("{} sending direct message:{} to:{}", new Object[]{selfAddress.getId(), msg, header.getDestination()});
                 trigger(msg, network);
@@ -134,8 +134,8 @@ public class NatTraversalComp extends ComponentDefinition {
                 if(header.getDestination().getParents().isEmpty()) {
                     throw new RuntimeException("nated node with no parents");
                 }
-                NatedAddress parent = randomNode(header.getDestination().getParents());
-                SourceHeader<NatedAddress> sourceHeader = new SourceHeader(header, parent);
+                NattedAddress parent = randomNode(header.getDestination().getParents());
+                SourceHeader<NattedAddress> sourceHeader = new SourceHeader(header, parent);
                 log.info("{} sending message:{} to relay:{}", new Object[]{selfAddress.getId(), msg, parent});
                 trigger(msg.copyMessage(sourceHeader), network);
                 return;
@@ -152,9 +152,9 @@ public class NatTraversalComp extends ComponentDefinition {
         }
     };
     
-    private NatedAddress randomNode(Set<NatedAddress> nodes) {
+    private NattedAddress randomNode(Set<NattedAddress> nodes) {
         int index = rand.nextInt(nodes.size());
-        Iterator<NatedAddress> it = nodes.iterator();
+        Iterator<NattedAddress> it = nodes.iterator();
         while(index > 0) {
             it.next();
             index--;
@@ -164,10 +164,10 @@ public class NatTraversalComp extends ComponentDefinition {
 
     public static class NatTraversalInit extends Init<NatTraversalComp> {
 
-        public final NatedAddress selfAddress;
+        public final NattedAddress selfAddress;
         public final long seed;
 
-        public NatTraversalInit(NatedAddress selfAddress, long seed) {
+        public NatTraversalInit(NattedAddress selfAddress, long seed) {
             this.selfAddress = selfAddress;
             this.seed = seed;
         }

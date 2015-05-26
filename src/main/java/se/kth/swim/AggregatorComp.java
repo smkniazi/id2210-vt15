@@ -29,7 +29,7 @@ import se.sics.kompics.Start;
 import se.sics.kompics.Stop;
 import se.sics.kompics.network.Network;
 import se.sics.kompics.timer.Timer;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
@@ -40,7 +40,7 @@ public class AggregatorComp extends ComponentDefinition {
     private Positive<Network> network = requires(Network.class);
     private Positive<Timer> timer = requires(Timer.class);
 
-    private final NatedAddress selfAddress;
+    private final NattedAddress selfAddress;
 
     public AggregatorComp(AggregatorInit init) {
         this.selfAddress = init.selfAddress;
@@ -79,9 +79,9 @@ public class AggregatorComp extends ComponentDefinition {
 
     public static class AggregatorInit extends Init<AggregatorComp> {
 
-        public final NatedAddress selfAddress;
+        public final NattedAddress selfAddress;
 
-        public AggregatorInit(NatedAddress selfAddress) {
+        public AggregatorInit(NattedAddress selfAddress) {
             this.selfAddress = selfAddress;
         }
     }

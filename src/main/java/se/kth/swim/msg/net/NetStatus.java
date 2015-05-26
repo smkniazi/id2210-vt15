@@ -21,7 +21,7 @@ package se.kth.swim.msg.net;
 
 import se.kth.swim.msg.Status;
 import se.sics.kompics.network.Header;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 
 /**
  *
@@ -29,16 +29,16 @@ import se.sics.p2ptoolbox.util.network.NatedAddress;
  */
 public class NetStatus extends NetMsg<Status> {
 
-    public NetStatus(NatedAddress src, NatedAddress dst, Status status) {
+    public NetStatus(NattedAddress src, NattedAddress dst, Status status) {
         super(src, dst, status);
     }
 
-    private NetStatus(Header<NatedAddress> header, Status content) {
+    private NetStatus(Header<NattedAddress> header, Status content) {
         super(header, content);
     }
 
     @Override
-    public NetMsg copyMessage(Header<NatedAddress> newHeader) {
+    public NetMsg copyMessage(Header<NattedAddress> newHeader) {
         return new NetStatus(newHeader, getContent());
     }
 

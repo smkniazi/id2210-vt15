@@ -18,7 +18,7 @@
  */
 package se.kth.swim.croupier.msg;
 
-import se.sics.p2ptoolbox.util.network.NatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
@@ -38,8 +38,8 @@ public class CroupierUpdate {
     }
     
      public static class Address implements CroupierMsg.OneWay {
-        public final NatedAddress selfAddress;
-        public Address(NatedAddress selfAddress) {
+        public final NattedAddress selfAddress;
+        public Address(NattedAddress selfAddress) {
             this.selfAddress = selfAddress;
         }
 

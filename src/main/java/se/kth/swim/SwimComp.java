@@ -36,7 +36,7 @@ import se.sics.kompics.timer.CancelTimeout;
 import se.sics.kompics.timer.SchedulePeriodicTimeout;
 import se.sics.kompics.timer.Timeout;
 import se.sics.kompics.timer.Timer;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
@@ -47,9 +47,9 @@ public class SwimComp extends ComponentDefinition {
     private Positive<Network> network = requires(Network.class);
     private Positive<Timer> timer = requires(Timer.class);
 
-    private final NatedAddress selfAddress;
-    private final Set<NatedAddress> bootstrapNodes;
-    private final NatedAddress aggregatorAddress;
+    private final NattedAddress selfAddress;
+    private final Set<NattedAddress> bootstrapNodes;
+    private final NattedAddress aggregatorAddress;
 
     private UUID pingTimeoutId;
     private UUID statusTimeoutId;
@@ -111,7 +111,7 @@ public class SwimComp extends ComponentDefinition {
 
         @Override
         public void handle(PingTimeout event) {
-            for (NatedAddress partnerAddress : bootstrapNodes) {
+            for (NattedAddress partnerAddress : bootstrapNodes) {
                 log.info("{} sending ping to partner:{}", new Object[]{selfAddress.getId(), partnerAddress});
                 trigger(new NetPing(selfAddress, partnerAddress), network);
             }
@@ -159,11 +159,11 @@ public class SwimComp extends ComponentDefinition {
 
     public static class SwimInit extends Init<SwimComp> {
 
-        public final NatedAddress selfAddress;
-        public final Set<NatedAddress> bootstrapNodes;
-        public final NatedAddress aggregatorAddress;
+        public final NattedAddress selfAddress;
+        public final Set<NattedAddress> bootstrapNodes;
+        public final NattedAddress aggregatorAddress;
 
-        public SwimInit(NatedAddress selfAddress, Set<NatedAddress> bootstrapNodes, NatedAddress aggregatorAddress) {
+        public SwimInit(NattedAddress selfAddress, Set<NattedAddress> bootstrapNodes, NattedAddress aggregatorAddress) {
             this.selfAddress = selfAddress;
             this.bootstrapNodes = bootstrapNodes;
             this.aggregatorAddress = aggregatorAddress;

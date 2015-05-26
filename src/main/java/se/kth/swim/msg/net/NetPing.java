@@ -20,23 +20,23 @@ package se.kth.swim.msg.net;
 
 import se.kth.swim.msg.Ping;
 import se.sics.kompics.network.Header;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
  */
 public class NetPing extends NetMsg<Ping> {
 
-    public NetPing(NatedAddress src, NatedAddress dst) {
+    public NetPing(NattedAddress src, NattedAddress dst) {
         super(src, dst, new Ping());
     }
 
-    private NetPing(Header<NatedAddress> header, Ping content) {
+    private NetPing(Header<NattedAddress> header, Ping content) {
         super(header, content);
     }
 
     @Override
-    public NetMsg copyMessage(Header<NatedAddress> newHeader) {
+    public NetMsg copyMessage(Header<NattedAddress> newHeader) {
         return new NetPing(newHeader, getContent());
     }
 

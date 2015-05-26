@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kompics.version>0.8.0-SNAPSHOT</kompics.version>
-        <simulator.version>1.1-SNAPSHOT</simulator.version>
+        <simulator.version>1.1.1-SNAPSHOT</simulator.version>
     </properties>
 
     <dependencies>

@@ -19,16 +19,16 @@
 package se.kth.swim.croupier.msg;
 
 import java.util.Set;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
  */
 public class CroupierJoin implements CroupierMsg.OneWay {
 
-    public final Set<NatedAddress> peers;
+    public final Set<NattedAddress> peers;
 
-    public CroupierJoin(Set<NatedAddress> peers) {
+    public CroupierJoin(Set<NattedAddress> peers) {
         this.peers = peers;
     }
 

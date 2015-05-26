@@ -20,21 +20,21 @@ package se.kth.swim.msg.net;
 
 import se.sics.kompics.network.Header;
 import se.sics.kompics.network.Transport;
-import se.sics.p2ptoolbox.util.network.NatedAddress;
+import se.sics.p2ptoolbox.util.network.NattedAddress;
 import se.sics.p2ptoolbox.util.network.impl.BasicContentMsg;
 import se.sics.p2ptoolbox.util.network.impl.BasicHeader;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
  */
-public abstract class NetMsg<C extends Object> extends BasicContentMsg<NatedAddress, Header<NatedAddress>, C> {
+public abstract class NetMsg<C extends Object> extends BasicContentMsg<NattedAddress, Header<NattedAddress>, C> {
 
-    public NetMsg(NatedAddress src, NatedAddress dst, C content) {
+    public NetMsg(NattedAddress src, NattedAddress dst, C content) {
         this(new BasicHeader(src, dst, Transport.UDP), content);
     }
     
-    public NetMsg(Header<NatedAddress> header, C content) {
+    public NetMsg(Header<NattedAddress> header, C content) {
         super(header, content);
     }
-    public abstract NetMsg copyMessage(Header<NatedAddress> newHeader);
+    public abstract NetMsg copyMessage(Header<NattedAddress> newHeader);
 }
